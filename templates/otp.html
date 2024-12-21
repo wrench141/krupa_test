@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- OTPLESS Login UI -->
+    <div id="otpless-login-page"></div>
+    <a href="/register/" style="display: flex; justify-content: center"
+      >Register here</a
+    >
+
+    <!-- OTPLESS SDK -->
+    <script
+      id="otpless-sdk"
+      type="text/javascript"
+      data-appid="KS9N7ARXGMULOP4CB3JG"
+      src="https://otpless.com/v3/auth.js"
+    ></script>
+    <script>
+      function otpless(otplessUser) {
+        const token = otplessUser.token;
+        console.log("Token:", token);
+        console.log("User Details:", JSON.stringify(otplessUser));
+        fetch("/login/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify(otplessUser),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Success:", data);
+            if (data.status === "success") {
+              // Redirect or perform other actions upon successful login
+              window.location.href = "/";
+            } else {
+              // Handle errors (e.g., show message to user)
+              alert(data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
+</html>

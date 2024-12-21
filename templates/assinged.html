@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Krupa Corporation</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Quicksand", sans-serif;
+        background-color: #f6f6f6;
+        color: #333;
+      }
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 280px;
+        background-color: #ffffff;
+        color: #292f46;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+      .sidebar .dropdown-content {
+        display: none;
+        flex-direction: column;
+      }
+      .sidebar .dropdown-content a {
+        padding: 15px;
+        color: #292f46;
+        background-color: #f7f4f4;
+        margin-bottom: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 15px;
+        text-align: center;
+        border-radius: 10px;
+        transition: background-color 0.2s;
+      }
+      .sidebar .dropdown-content .active {
+        background-color: #00a1ff;
+        color: white;
+      }
+      .sidebar .dropdown-content.show {
+        display: flex;
+      }
+      .logo {
+        width: 100%;
+        max-width: 180px;
+        margin-bottom: 30px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        color: #292f46;
+        text-decoration: none;
+        background-color: #f7f4f4;
+        font-size: 17px;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        justify-content: space-between;
+        transition: background-color 0.2s;
+      }
+      .nav-item.active {
+        background-color: #00a1ff;
+        color: white;
+      }
+      .drop-active {
+        border: 1px solid #00a1ff;
+      }
+
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+      }
+      .arrow {
+        transition: transform 0.3s ease;
+      }
+      .arrow.down {
+        transform: rotate(-90deg);
+      }
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: black;
+        font-size: 24px;
+        cursor: pointer;
+      }
+      .cont {
+        padding: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 250px;
+        }
+        .menu-toggle {
+          display: block;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          flex-direction: column;
+        }
+        .sidebar {
+          position: fixed;
+          height: 100%;
+          z-index: 1000;
+          left: -250px;
+          transition: left 0.3s ease;
+        }
+        .menu-toggle {
+          display: block;
+          position: fixed;
+          top: 15px;
+          left: 15px;
+          z-index: 1001;
+        }
+        .sidebar.show {
+          left: 0;
+        }
+      }
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px; /* Adjusted for better spacing */
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+      }
+
+      .search-bar {
+        display: flex;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
+
+      .search-bar input {
+        flex-grow: 1;
+        padding: 10px 15px;
+        border: none;
+        background-color: #dee2e6;
+        font-size: 14px;
+        outline: none;
+      }
+
+      .search-bar button {
+        padding: 10px;
+        background-color: #dee2e6;
+        border: none;
+        cursor: pointer;
+      }
+
+      .top-icons {
+        display: flex;
+        gap: 15px;
+      }
+
+      .top-icons .icon {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+      }
+
+      /* Responsive design for smaller screens */
+      @media (max-width: 768px) {
+        .top-bar {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 10px 20px;
+        }
+
+        .search-bar {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+
+        .top-icons {
+          width: 100%;
+          justify-content: flex-end;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .top-bar {
+          padding: 10px;
+        }
+
+        .search-bar {
+          width: 100%;
+        }
+
+        .top-icons {
+          gap: 10px;
+        }
+      }
+
+      .main-content {
+        flex-grow: 1;
+        transition: margin-left 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          margin-left: 250px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .main-content {
+          margin-left: 0;
+        }
+        .sidebar.show + .main-content {
+          margin-left: 250px;
+        }
+      }
+
+      .top-bar {
+        position: relative;
+        margin-top: 0;
+        margin-left: 0;
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .cont {
+        max-width: 1400px;
+        margin: 20px auto;
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .nav-tabs {
+        border-bottom: 1px solid #e0e0e0;
+        margin-bottom: 20px;
+      }
+
+      .nav-tab {
+        display: inline-block;
+        padding: 10px 20px;
+        background: transparent;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-tab.active {
+        background: #007bff;
+        color: white;
+        border-radius: 4px 4px 0 0;
+      }
+
+      .table-container {
+        display: none;
+      }
+
+      .table-container.active {
+        display: block;
+      }
+
+      .customer-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .customer-table th {
+        text-align: left;
+        padding: 12px 20px;
+        border-bottom: 2px solid #e0e0e0;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .customer-table td {
+        padding: 12px 20px;
+        border-bottom: 1px solid #e0e0e0;
+        color: #666;
+      }
+
+      .checkbox-cell {
+        width: 40px;
+        text-align: center;
+      }
+
+      .phone-icon {
+        float: right;
+        color: #666;
+      }
+
+      .status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-open {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+
+      .status-closed {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .ticket-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .ticket-table th,
+      .ticket-table td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .ticket-table th {
+        background: #f5f5f5;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .status-badge {
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        display: inline-block;
+      }
+
+      .status-open {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+
+      .status-closed {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .status-progress {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+
+      .status-pending {
+        background: #f5f5f5;
+        color: #666;
+      }
+
+      .status-select {
+        padding: 4px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background: white;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      @media screen and (max-width: 768px) {
+        .ticket-table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+
+        .ticket-table th,
+        .ticket-table td {
+          padding: 8px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="menu-toggle">☰</button>
+      <aside class="sidebar">
+        <img src="images/krupa.svg" alt="Logo" class="logo" />
+        <nav style="height: 80vh; display: flex; flex-direction: column">
+          <div
+            class="nav-item"
+            style="display: flex; justify-content: space-between"
+          >
+            <div>
+              <img
+                src="images/dashboard-light.svg"
+                alt="Dashboard Icon"
+                class="icon"
+              />
+              <span>Dashboard</span>
+            </div>
+          </div>
+          <a href="/adminproducts/" style="text-decoration: none">
+            <div class="nav-item" data-dropdown="products-dropdown">
+              <div>
+                <img
+                  src="images/products-dark.svg"
+                  alt="Products Icon"
+                  class="icon"
+                />
+                <span>Products</span>
+              </div>
+              <img src="images/dropdown.svg" alt="Arrow" class="arrow" />
+            </div>
+          </a>
+          <div id="products-dropdown" class="dropdown-content">
+            <a href="#" class="active">Products List</a>
+            <a href="#">Category List</a>
+          </div>
+          <a href="/leadsall/" style="text-decoration: none">
+            <div class="nav-item" data-dropdown="leads-dropdown">
+              <div>
+                <img src="images/leads.svg" alt="Leads Icon" class="icon" />
+                <span>Leads</span>
+              </div>
+            </div>
+          </a>
+          <div
+            class="nav-item drop-active"
+            style="display: flex; justify-content: space-between"
+          >
+            <div>
+              <img src="images/manager.svg" alt="Dashboard Icon" class="icon" />
+              <span>Managers </span>
+            </div>
+          </div>
+          <div class="nav-item" data-dropdown="users-dropdown">
+            <div>
+              <img src="images/user-dark.svg" alt="Users Icon" class="icon" />
+              <span>Users</span>
+            </div>
+            <img src="images/dropdown.svg" alt="Arrow" class="arrow" />
+          </div>
+          <a href="/customerspage/" style="text-decoration: none">
+            <div class="nav-item" data-dropdown="sales-dropdown">
+              <div>
+                <img
+                  src="images/sales-dark.svg"
+                  alt="Sales Icon"
+                  class="icon"
+                />
+                <span>Sales</span>
+              </div>
+              <img src="images/dropdown.svg" alt="Arrow" class="arrow" />
+            </div>
+          </a>
+          <div class="nav-item" data-dropdown="purchases-dropdown">
+            <div>
+              <img
+                src="images/purchaces.svg"
+                alt="Purchases Icon"
+                class="icon"
+              />
+              <span>Purchases</span>
+            </div>
+            <img src="images/dropdown.svg" alt="Arrow" class="arrow" />
+          </div>
+        </nav>
+      </aside>
+      <main class="main-content">
+        <div class="top-bar">
+          <div class="search-bar">
+            <input type="text" placeholder="Search term" />
+            <button>
+              <svg class="icon" viewBox="0 0 24 24">
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div class="top-icons">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              ></path>
+            </svg>
+            <svg class="icon" viewBox="0 0 24 24">
+              <path
+                d="M20 17.17L18.83 16H5.17l-1.34-1.34C4.54 12.78 7.15 11 10 11h4c2.85 0 5.46 1.78 6.17 4.66l1.26 1.26c.3-.31.57-.65.83-1.02V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v13.17c.31.4.67.77 1.08 1.08L3 21.59V22h18v-.41l-1-1.59zM5 6h14v4H5V6zm0 6h10v2H5v-2z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+        <div class="cont">
+          <div class="nav-tabs">
+            <button class="nav-tab" onclick="showTable('customers')">
+              Assigned Customers
+            </button>
+            <button class="nav-tab" onclick="showTable('tickets')">
+              Support Tickets
+            </button>
+            <button class="nav-tab" onclick="showTable('requests')">
+              Customer Request
+            </button>
+          </div>
+
+          <!-- Assigned Customers Table -->
+          <div id="customers" class="table-container">
+            <table class="customer-table">
+              <thead>
+                <tr>
+                  <th class="checkbox-cell"><input type="checkbox" /></th>
+                  <th>NAME</th>
+                  <th>COMPANY NAME</th>
+                  <th>EMAIL</th>
+                  <th>WORK PHONE</th>
+                  <th>
+                    <img src="images/search.svg" alt="" style="scale: 1.5" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in assigned %}
+                <tr>
+                  <td class="checkbox-cell"><input type="checkbox" /></td>
+                  <td>{{i.manager.displayname}}</td>
+                  <td>{{i.company}}</td>
+                  <td>{{i.email}}</td>
+                  <td>+91 {{i.mobile_number}}</td>
+                  <td>
+                    <img
+                      src="images/managersettings.svg"
+                      alt=""
+                      style="scale: 1.3"
+                    />
+                  </td>
+                </tr>
+                {% endfor %}
+                <!-- <tr>
+                  <td class="checkbox-cell"><input type="checkbox" /></td>
+                  <td>Gurudeep</td>
+                  <td>Amazon</td>
+                  <td>gurudeep@gmail.com</td>
+                  <td>+91 1234567890</td>
+                  <td>
+                    <img
+                      src="images/managersettings.svg"
+                      alt=""
+                      style="scale: 1.3"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="checkbox-cell"><input type="checkbox" /></td>
+                  <td>Benjamin</td>
+                  <td>Flipkart</td>
+                  <td>benjamin@gmail.com</td>
+                  <td>+91 1234567890</td>
+                  <td>
+                    <img
+                      src="images/managersettings.svg"
+                      alt=""
+                      style="scale: 1.3"
+                    />
+                  </td>
+                </tr> -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Support Tickets Table -->
+          <div id="tickets" class="table-container">
+            <table class="ticket-table">
+              <thead>
+                <tr>
+                  <th>TICKET#</th>
+                  <th>DATE</th>
+                  <th>NAME</th>
+                  <th>SUBJECT</th>
+                  <th>STATUS</th>
+                  <th>PRIORITY</th>
+                  <th>SELECT</th>
+                  <th>SUBMIT</th>
+                  <th>
+                    <img src="images/search.svg" alt="" style="scale: 1.5" />
+                  </th>
+                </tr>
+                {% for i in support %}
+                <tr>
+                  <td>{{i.order_id}}</td>
+                  <td>{{i.created_at}}</td>
+                  <td>{{i.profile.email}}</td>
+                  <td>{{i.subject}}</td>
+                  <td>
+                    <span
+                      id="status-${index}"
+                      class="status-badge ${getStatusClass(ticket.status)}"
+                    >
+                      {{i.progress}}
+                    </span>
+                  </td>
+                  <td>{{i.profile.phone_number}}</td>
+                  <form method="post">
+                    {% csrf_token %}
+                    <td>
+                      <input value="{{i.id}}" name="id" style="display: none" />
+                      <select name="status">
+                        <option>OPEN</option>
+                        <option>CLOSED</option>
+                        <option>PROGRESS</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button
+                        type="submit"
+                        style="
+                          width: 80px;
+                          height: 30px;
+                          border-radius: 3px;
+                          background-color: #00a1ff;
+                          border: none;
+                          color: white;
+                          cursor: pointer;
+                        "
+                      >
+                        Submit
+                      </button>
+                    </td>
+                  </form>
+                </tr>
+                {% endfor %}
+              </thead>
+              <tbody id="ticketTableBody"></tbody>
+            </table>
+
+            <!-- <script>
+              // Ticket data
+              const tickets = [
+                  { id: '123456-1', date: 'DD/MM/YYYY', name: 'Mr. ABC', subject: 'lorem ipsum dolor sit amet', status: 'OPEN', priority: '+91 120120201' },
+                  { id: '123456-2', date: 'DD/MM/YYYY', name: 'Mr. ABC', subject: 'lorem ipsum dolor sit amet', status: 'CLOSED', priority: '+91 120120201' },
+                  { id: '123456-3', date: 'DD/MM/YYYY', name: 'Mr. ABC', subject: 'lorem ipsum dolor sit amet', status: 'PROGRESS', priority: '+91 120120201' },
+                  { id: '123456-4', date: 'DD/MM/YYYY', name: 'Mr. ABC', subject: 'lorem ipsum dolor sit amet', status: 'PENDING', priority: '+91 120120201' }
+              ];
+
+              // Status options
+              const statusOptions = ['OPEN', 'PROGRESS', 'CLOSED'];
+
+              // Function to get status badge class
+              function getStatusClass(status) {
+                  const statusMap = {
+                      'OPEN': 'status-open',
+                      'CLOSED': 'status-closed',
+                      'PROGRESS': 'status-progress',
+                      'PENDING': 'status-pending'
+                  };
+                  return statusMap[status] || 'status-pending';
+              }
+
+              function createStatusSelect(currentStatus, ticketId, rowIndex) {
+                  return `
+                      <select class="status-select" onchange="updateStatus(${rowIndex}, this.value)">
+                          <option value="">Select Status</option>
+                          ${statusOptions.map(status =>
+                              <option value="${status}" ${status === currentStatus ? 'selected' : ''}>${status}</option>
+                          ).join('')}
+                      </select>
+                  `;
+              }
+
+              function updateStatus(rowIndex, newStatus) {
+                  tickets[rowIndex].status = newStatus;
+
+                  const statusBadge = document.querySelector(#status-${rowIndex});
+                  if (statusBadge) {
+                      statusBadge.className = status-badge ${getStatusClass(newStatus)};
+                      statusBadge.textContent = newStatus;
+                  }
+              }
+
+              function renderTable() {
+                  const tableBody = document.getElementById('ticketTableBody');
+                  tableBody.innerHTML = tickets.map((ticket, index) => `
+                      <tr>
+                          <td>${ticket.id}</td>
+                          <td>${ticket.date}</td>
+                          <td>${ticket.name}</td>
+                          <td>${ticket.subject}</td>
+                          <td>
+                              <span id="status-${index}" class="status-badge ${getStatusClass(ticket.status)}">
+                                  ${ticket.status}
+                              </span>
+                          </td>
+                          <td>${ticket.priority}</td>
+                          <td>${createStatusSelect(ticket.status, ticket.id, index)}<button>save</button></td>
+                      </tr>
+                  `).join('');
+              }
+
+              // Search functionality
+              document.querySelector('.search-bar').addEventListener('keyup', function(e) {
+                  const searchTerm = e.target.value.toLowerCase();
+                  const rows = document.querySelectorAll('#ticketTableBody tr');
+
+                  rows.forEach(row => {
+                      const text = row.textContent.toLowerCase();
+                      row.style.display = text.includes(searchTerm) ? '' : 'none';
+                  });
+              });
+
+              // Initial render
+              renderTable();
+            </script> -->
+          </div>
+
+          <!-- Customer Request Table -->
+          <div id="requests" class="table-container">
+            <table class="ticket-table">
+              <thead>
+                <tr>
+                  <th>DATE</th>
+                  <th>NAME</th>
+                  <th>TIME</th>
+                  <th>CALL PRIORITY</th>
+                  <th>STATUS</th>
+                  <th>
+                    <img src="images/search.svg" alt="" style="scale: 1.5" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="requestbody"></tbody>
+            </table>
+
+            <script>
+              // requests data
+               const requests = [
+                   {  date: 'DD/MM/YYYY', name: 'Mr. ABC', time:'3.01', callpriority: 'lorem ipsum dolor sit amet', status: 'OPEN',  },
+                   {  date: 'DD/MM/YYYY', name: 'Mr. ABC', time:'3.01', callpriority: 'lorem ipsum dolor sit amet', status: 'PROGRESS',  },
+                   {  date: 'DD/MM/YYYY', name: 'Mr. ABC', time:'3.01', callpriority: 'lorem ipsum dolor sit amet', status: 'OPEN',  },
+                   {  date: 'DD/MM/YYYY', name: 'Mr. ABC', time:'3.01', callpriority: 'lorem ipsum dolor sit amet', status: 'CLOSED',  },
+                   {  date: 'DD/MM/YYYY', name: 'Mr. ABC', time:'3.01', callpriority: 'lorem ipsum dolor sit amet', status: 'OPEN',  },
+
+               ];
+
+               // Status options
+               const statusoptions = ['OPEN', 'PROGRESS', 'CLOSED'];
+
+               // Function to get status badge class
+               function getRequestStatusClass(status) {
+                   const statusMap = {
+                       'OPEN': 'status-open',
+                       'CLOSED': 'status-closed',
+                       'PROGRESS': 'status-progress',
+                       'PENDING': 'status-pending'
+                   };
+                   return statusMap[status] || 'status-pending';
+               }
+
+               function createRequestStatusSelect(currentStatus, requestId, rowIndex) {
+                   return `
+                       <select class="request-status-select" data-index="${rowIndex}">
+                           <option value="">Select Status</option>
+                           ${statusoptions.map(status =>
+                               <option value="${status}" ${status === currentStatus ? 'selected' : ''}>${status}</option>
+                           ).join('')}
+                       </select>
+                   `;
+               }
+
+               function updateRequestStatus(rowIndex, newStatus) {
+                   // Update the data
+                   requests[rowIndex].status = newStatus;
+
+                   // Update the UI - Note the changed ID prefix
+                   const statusBadge = document.querySelector(#request-status-${rowIndex});
+                   if (statusBadge) {
+                       statusBadge.className = status-badge ${getRequestStatusClass(newStatus)};
+                       statusBadge.textContent = newStatus;
+                   }
+               }
+
+               function renderRequestTable() {
+                   const tableBody = document.getElementById('requestbody');
+                   tableBody.innerHTML = requests.map((request, index) => `
+                       <tr>
+                           <td>${request.date}</td>
+                           <td>${request.name}</td>
+                           <td>${request.time}</td>
+                           <td>${request.callpriority}</td>
+                           <td>
+                               <span id="request-status-${index}" class="status-badge ${getRequestStatusClass(request.status)}">
+                                   ${request.status}
+                               </span>
+                           </td>
+                           <td>${createRequestStatusSelect(request.status, request.id, index)}<button>save</button></td>
+
+                       </tr>
+                   `).join('');
+
+                   // Add event listeners to all status selects
+                   document.querySelectorAll('.request-status-select').forEach(select => {
+                       select.addEventListener('change', function() {
+                           const rowIndex = this.getAttribute('data-index');
+                           const newStatus = this.value;
+                           updateRequestStatus(rowIndex, newStatus);
+                       });
+                   });
+               }
+
+               // Search functionality
+               const requestSearchBar = document.querySelector('#requests .search-bar');
+               if (requestSearchBar) {
+                   requestSearchBar.addEventListener('keyup', function(e) {
+                       const searchTerm = e.target.value.toLowerCase();
+                       const rows = document.querySelectorAll('#requestbody tr');
+
+                       rows.forEach(row => {
+                           const text = row.textContent.toLowerCase();
+                           row.style.display = text.includes(searchTerm) ? '' : 'none';
+                       });
+                   });
+               }
+
+               // Initial render
+               renderRequestTable();
+            </script>
+          </div>
+
+          <script>
+            // Show the customers table by default
+            document.getElementById("customers").classList.add("active");
+            document.querySelector(".nav-tab").classList.add("active");
+
+            function showTable(tableId) {
+              // Hide all tables
+              document
+                .querySelectorAll(".table-container")
+                .forEach((container) => {
+                  container.classList.remove("active");
+                });
+
+              // Remove active class from all tabs
+              document.querySelectorAll(".nav-tab").forEach((tab) => {
+                tab.classList.remove("active");
+              });
+
+              // Show selected table and activate corresponding tab
+              document.getElementById(tableId).classList.add("active");
+              event.target.classList.add("active");
+            }
+          </script>
+        </div>
+      </main>
+    </div>
+    <script>
+      document.querySelector(".menu-toggle").addEventListener("click", () => {
+        document.querySelector(".sidebar").classList.toggle("show");
+      });
+      document.querySelectorAll(".nav-item[data-dropdown]").forEach((item) => {
+        item.addEventListener("click", () => {
+          const dropdownId = item.getAttribute("data-dropdown");
+          const dropdown = document.getElementById(dropdownId);
+          dropdown.classList.toggle("show");
+          const arrow = item.querySelector(".arrow");
+          arrow.classList.toggle("down");
+        });
+      });
+    </script>
+  </body>
+</html>

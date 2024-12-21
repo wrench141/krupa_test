@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      main {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 90%;
+        max-width: 1000px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .left-section {
+        width: 60%;
+        padding-right: 20px;
+      }
+
+      .right-section {
+        width: 35%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      h2,
+      h3 {
+        color: #003366;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      h3 {
+        margin-top: 30px;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #00a0e3;
+        font-size: 14px;
+      }
+
+      .input-wrapper {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .country-code {
+        background-color: #f0f0f0;
+        padding: 8px;
+        border-right: 1px solid #ccc;
+        color: #888;
+      }
+
+      input[type="text"] {
+        flex-grow: 1;
+        padding: 8px;
+        border: none;
+        outline: none;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .checkbox-group label {
+        margin-left: 5px;
+        color: #333;
+      }
+
+      button {
+        background-color: #00a0e3;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        max-width: 300px;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #0086bd;
+      }
+
+      .new-supplier-btn {
+        width: 100%;
+        max-width: 200px;
+        padding: 12px;
+        background-color: #00a1ff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .info-box {
+        background-color: #1d9eea;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 2px;
+        font-weight: 400;
+        font-size: 16px;
+        text-align: left;
+        display: flex;
+        gap: 20px;
+        line-height: 1.5;
+      }
+
+      .info-box span {
+        display: block;
+        font-size: 16px;
+      }
+
+      .subtext {
+        display: block;
+        margin-top: 5px;
+        font-size: 14px;
+        color: #e0f3ff;
+      }
+
+      .two {
+        border-radius: 0px;
+      }
+
+      .one {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
+
+      .three {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+      }
+
+      footer {
+        background-color: #00a1ff;
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+        color: white;
+        margin-top: auto;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          width: 95%;
+        }
+
+        .left-section,
+        .right-section {
+          width: 100%;
+          padding: 0;
+        }
+
+        .right-section {
+          margin-top: 20px;
+        }
+
+        .input-wrapper,
+        button {
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          font-size: 14px;
+        }
+
+        h2 {
+          font-size: 20px;
+        }
+
+        h3 {
+          font-size: 18px;
+        }
+
+        .info-box {
+          font-size: 14px;
+        }
+
+        .subtext {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <div class="left-section">
+          <h2>LOGIN</h2>
+          <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+              <label for="mobile"
+                ><img src="images/message.svg" alt="" /> Mobile Number</label
+              >
+              <div class="input-wrapper">
+                <span class="country-code">+91</span>
+                <input
+                  type="text"
+                  id="mobile"
+                  name="number"
+                  placeholder="Enter Mobile Number"
+                />
+              </div>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="whatsapp-alerts" />
+              <label for="whatsapp-alerts" style="font-weight: 900"
+                >Also Gets Alerts
+                <img src="images/whatsapp.svg" alt="" /> WhatsApp</label
+              >
+            </div>
+            <button type="submit">Get a OTP</button>
+          </form>
+
+          <div class="supplier-section">
+            <h3>SUPPLIER LOGIN</h3>
+            <p>
+              Please Click on the following button to fill your Supplier
+              Registration Form.
+            </p>
+
+            <button class="new-supplier-btn">
+              <img src="images/supplier.svg" alt="" />
+              SUPPLIER
+            </button>
+          </div>
+        </div>
+        <div class="right-section">
+          <div class="info-box one" onclick="change()" style="cursor: pointer">
+            <div class="icon">
+              <img src="images/new_user.svg" alt="" />
+            </div>
+            <span>New User Registration</span>
+          </div>
+          <script>
+            function change() {
+              window.location.href = "/register/";
+            }
+          </script>
+          <div class="info-box two">
+            <div class="icon">
+              <img src="images/contact_us.svg" alt="" />
+            </div>
+            <div>
+              <span>Contact Us</span>
+              <span class="subtext">sales@krupacorporation.com</span>
+            </div>
+          </div>
+          <div class="info-box three">
+            <div class="icon">
+              <img src="images/help.svg" alt="" />
+            </div>
+            <div>
+              <span>Need Help?</span>
+              <span class="subtext">Chat with us</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        © 2024 Krupa Corporation Private Limited | Krupa Trade E-Procurement
+        Portal | All rights reserved
+      </p>
+    </footer>
+     
+  </body>
+</html>
